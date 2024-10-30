@@ -18,7 +18,7 @@ function LandingPage(props) {
         onClickLogin={onClickLogin}
         onClickLogout={onClickLogout}
       />
-      <div style={{ padding: 16 }}>Fuck Awesome React</div>
+      {/* <div style={{ padding: 16 }}>Fuck Awesome React</div> */}
     </div>
   );
 }

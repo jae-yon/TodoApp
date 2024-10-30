@@ -5,10 +5,15 @@ const styles = {
     padding: 16,
     display: "flex",
     flexDirection: "row",
-    borderBottom: "1px solid grey",
   },
   greeting: {
-    marginRight: 8,
+    padding: 10,
+  },
+  log: {
+    border: 0,
+    padding: 10,
+    borderRadius: 10,
+    boxShadow: "0px 0px 7px grey",
   },
 };
 
@@ -20,9 +25,9 @@ function Toolbar(props) {
       {isLoggedIn && <span style={styles.greeting}>welcome</span>}
 
       {isLoggedIn ? (
-        <button onClick={onClickLogout}>logout</button>
+        <button style={styles.log} onClick={onClickLogout}>logout</button>
       ) : (
-        <button onClick={onClickLogin}>login</button>
+        <button style={styles.log} onClick={onClickLogin}>login</button>
       )}
     </div>
   );
