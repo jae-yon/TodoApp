@@ -1,4 +1,5 @@
 import { useState } from "react";
+import TodoModal from "./TodoModal";
 
 const styles = {
   box: {
@@ -14,13 +15,12 @@ const styles = {
     boxShadow: "0px 0px 2px grey",
     fontSize: 18,
     fontWeight: 700,
-    padding: 10,
+    padding: 30,
     display: "grid",
-    justifyContent: "left",
   },
   todo: {
     display: "flex",
-    justifyContent: "left",
+    justifyContent: "space-between",
   }
 }
 
@@ -36,11 +36,15 @@ const TodoList : React.FC = () => {
 
   const [todos, setTodos] = useState<Todo[]>([
     { id: 1, text: "공부하기", isChecked: false},
-    { id: 2, text: "코딩하기", isChecked: false},
+    { id: 2, text: "요리하기", isChecked: false},
     { id: 3, text: "운동하기", isChecked: false},
   ]);
 
   const [newTodo, setNewTodo] = useState<string>("");
+
+  const [viewDetail, setViewDetail] = useState<boolean>(false);
+
+  const [selected, setSelected] = useState<Todo | null>(null);
 
   const checkedHandler = (itemId : number) => {
     setTodos((prev) => 
@@ -48,6 +52,15 @@ const TodoList : React.FC = () => {
         item.id === itemId ? {...item, isChecked : !item.isChecked} : item
       )
     )
+  }
+
+  const todoClickHandler = (todo : Todo) => {
+    setViewDetail(true);
+    setSelected(todo);
+  }
+
+  const todoCloseHandler = () => {
+    setViewDetail(false);
   }
 
   const addTodo = () => {
@@ -59,14 +72,18 @@ const TodoList : React.FC = () => {
     }
   }
 
+  const removeTodo = (itemId : number) => {
+    setTodos(todos.filter((todo) => todo.id !== itemId));
+  }
+
   return(
     <div style={styles.box}>
       {/* title */}
-      <h3>{title}</h3>
+      <h4>{title}</h4>
 
       {/* add */}
       <div style={{display: "flex", justifyContent: "center", marginBottom: 20}}>
-        <div style={{ overflow: "hidden", borderRadius: 5, boxShadow: "0px 0px 2px grey" }}>
+        <div style={{display: "flex", overflow: "hidden", borderRadius: 10, boxShadow: "0px 0px 2px grey"}}>
           <input
             type="text" 
             placeholder="할 일 입력"
@@ -91,18 +108,41 @@ const TodoList : React.FC = () => {
         {
           todos.map((e, index) => (
             <div style={styles.todo} key={index}>
-              <input 
-                type="checkbox"
-                style={{marginRight: 20}}
-                onChange={() => {
-                  checkedHandler(e.id);
-                }}
-              />
-              { e.isChecked ? <p>{e.text}</p> : <p style={{color: "grey"}}><del>{e.text}</del></p> }
+              <div style={styles.todo}>
+                <input 
+                  type="checkbox"
+                  style={{marginRight: 20}}
+                  onChange={() => {
+                    checkedHandler(e.id);
+                  }}
+                />
+                { e.isChecked ? 
+                  <p
+                    style={{cursor: "pointer"}} 
+                    onClick={() => todoClickHandler(e)}
+                  >
+                    {e.text}
+                  </p>
+                  : 
+                  <p style={{cursor: "default", color: "grey"}}>
+                    <del>{e.text}</del>
+                  </p> 
+                }
+              </div>
+              <div style={{display: "flex"}}>
+                <button 
+                  style={{border: "none", outline: "none", backgroundColor: "#FFF"}}
+                  onClick={() => removeTodo(e.id)}
+                >✖️</button>
+              </div>
             </div>
+            
           ))
         }
       </div>
+
+      <TodoModal show={viewDetail} todo={selected} handleClose={todoCloseHandler}/>
+
     </div>
   );
 }
